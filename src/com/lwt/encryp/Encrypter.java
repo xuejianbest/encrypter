@@ -56,7 +56,7 @@ public class Encrypter {
 		int file_head_key_off = DataUtil.random_int(0, KEY_DATA_LEN/2 - 1);
 		int file_name_key_off = DataUtil.random_int(0, KEY_DATA_LEN/2 - 1);
 		//加密文件头
-		file_head = bytesReplace(file_head, key_data, file_head_key_off);
+		file_head = bytesAdd(file_head, key_data, file_head_key_off);
 		//写入文件头到密钥文件尾部
 		long file_head_off = rf_key_file.length();
 		rf_key_file.seek(file_head_off);
@@ -65,7 +65,7 @@ public class Encrypter {
 		//读取文件名
 		byte[] file_name = src_file.getName().getBytes();
 		//加密文件名
-		file_name = bytesReplace(file_name, key_data, file_name_key_off);
+		file_name = bytesAdd(file_name, key_data, file_name_key_off);
 		//写入文件名到密钥文件尾部
 		long file_name_off = rf_key_file.length();
 		rf_key_file.seek(file_name_off);
@@ -92,16 +92,89 @@ public class Encrypter {
 		
 		rf_src_file.close();
 		rf_key_file.close();
+		
+		//更改文件名
+//		String file_path = src_file.getParent() + File.separator;
+		src_file.renameTo(new File(src_file.toString() + ".rar"));
 	}
 	
-	//多表替换算法
-	private byte[] bytesReplace(byte[] src, byte[] table, int off){
+	//解密文件方法
+	public void decrypt(File src_file) throws IOException {
+		RandomAccessFile rf_src_file = new RandomAccessFile(src_file, "rw");
+		RandomAccessFile rf_key_file = new RandomAccessFile(keyFile, "rw");
+		
+		//读取文件头,并解析
+		byte[] new_head = new byte[FILE_HEAD_LEN];
+		rf_src_file.read(new_head);
+		
+		byte[] file_head_off_bytes = new byte[4];
+		byte[] file_head_len_bytes = new byte[4];
+		byte[] file_head_key_off_bytes = new byte[4];
+		byte[] file_name_off_bytes = new byte[4];
+		byte[] file_name_len_bytes = new byte[4];
+		byte[] file_name_key_off_bytes = new byte[4];
+		System.arraycopy(new_head, FILE_HEAD_LEN-24, file_head_off_bytes, 0, 4);
+		System.arraycopy(new_head, FILE_HEAD_LEN-20, file_head_len_bytes, 0, 4);
+		System.arraycopy(new_head, FILE_HEAD_LEN-16, file_head_key_off_bytes, 0, 4);
+		System.arraycopy(new_head, FILE_HEAD_LEN-12, file_name_off_bytes, 0, 4);
+		System.arraycopy(new_head, FILE_HEAD_LEN-8, file_name_len_bytes, 0, 4);
+		System.arraycopy(new_head, FILE_HEAD_LEN-4, file_name_key_off_bytes, 0, 4);
+		int file_head_off = DataUtil.byteArr2Int_le(file_head_off_bytes);
+		int file_head_len = DataUtil.byteArr2Int_le(file_head_len_bytes);
+		int file_head_key_off = DataUtil.byteArr2Int_le(file_head_key_off_bytes);
+		int file_name_off = DataUtil.byteArr2Int_le(file_name_off_bytes);
+		int file_name_len = DataUtil.byteArr2Int_le(file_name_len_bytes);
+		int file_name_key_off = DataUtil.byteArr2Int_le(file_name_key_off_bytes);
+		
+		//读取密钥
+		byte[] key_data = new byte[KEY_DATA_LEN];
+		rf_key_file.read(key_data);
+		//读取文件头
+		byte[] file_head = new byte[file_head_len];
+		rf_key_file.seek(file_head_off);
+		rf_key_file.read(file_head);
+		//解密文件头
+		file_head = bytesDec(file_head, key_data, file_head_key_off);
+		
+		//将文件头写入文件
+		rf_src_file.seek(0);
+		rf_src_file.write(file_head);
+		if(file_head_len < FILE_HEAD_LEN){
+			rf_src_file.setLength(file_head_len);
+		}
+		
+		//读取文件名
+		byte[] file_name = new byte[file_name_len];
+		rf_key_file.seek(file_name_off);
+		rf_key_file.read(file_name);
+		//解密文件名
+		file_name = bytesDec(file_name, key_data, file_name_key_off);
+		
+		rf_src_file.close();
+		rf_key_file.close();
+		
+		//恢复文件名
+		String file_path = src_file.getParent() + File.separator;
+		src_file.renameTo(new File(file_path + new String(file_name)));
+	}
+			
+	//多表替换加密算法
+	private byte[] bytesAdd(byte[] src, byte[] table, int off){
 		byte[] desc = new byte[src.length];
 		for(int i=0; i<src.length; i++){
 			desc[i] = (byte)(src[i] + table[off+i]);
 		}
 		return desc;
 	}
+	//多表替换解密算法
+	private byte[] bytesDec(byte[] src, byte[] table, int off){
+		byte[] desc = new byte[src.length];
+		for(int i=0; i<src.length; i++){
+			desc[i] = (byte)(src[i] - table[off+i]);
+		}
+		return desc;
+	}
+	
 	
 	//生成密钥文件方法
 	public static void creatNewKeyFile(File newKeyFile) throws IOException{

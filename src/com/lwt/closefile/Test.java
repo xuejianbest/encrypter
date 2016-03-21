@@ -9,13 +9,14 @@ import java.util.Date;
 
 public class Test {
 	public static void main(String[] args) throws IOException {
-		byte b1 = 23;
-		byte b2 = 23;
-		byte b3 = 1;
+		File f = new File("E:\\BaiduYunDownload\\t\\key");
 		
+		System.out.println(f.getName());
+		System.out.println(f.getParent());
+		System.out.println(f.getParentFile().toString());
+		System.out.println(File.separator);
+		System.out.println(File.pathSeparator);
 	}
 	
-	public static String int2string(int i, int radix){
-		return "";
-	}
 }
+

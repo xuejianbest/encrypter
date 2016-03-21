@@ -11,8 +11,9 @@ public class Main {
 		File key_file = new File("E:\\BaiduYunDownload\\t\\key");
 		Encrypter encrypter = new Encrypter(key_file);
 		
-		encrypter.encrypt(new File("E:\\BaiduYunDownload\\t\\1.txt"));
+//		encrypter.encrypt(new File("E:\\BaiduYunDownload\\t\\src.mp4"));
 		
+		encrypter.decrypt(new File("E:\\BaiduYunDownload\\t\\src.mp4.rar"));
 	}
 
 }

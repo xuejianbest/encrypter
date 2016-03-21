@@ -14,6 +14,18 @@ public class DataUtil {
 		return b;
 	}
 	
+	/* 将一个长度为4的byte数组转化为一个int，小端字节序方式。
+	 * 
+	 * */
+	public static int byteArr2Int_le(byte[] b){
+		int i = 0;
+		for (int j = 0; j < 4; j++) {
+			i = i << 8;
+			i += (b[3-j] & 0xff);
+		}
+		return i;
+	}
+	
 	/* 获取start到end的随机数，包括end，不包含end
 	 * 
 	 * */

@@ -24,16 +24,19 @@ public class Main {
 		}
 		
 		File keyFile = command.getKeyFile();
-//		System.out.println("key file: " + keyFile);
+		System.out.println("key file: " + keyFile);
 		Encrypter encrypter = new Encrypter(keyFile);
 		for(File file : files){
 			if(command.isEncrypt()){
 				encrypter.encrypt(file);
+				System.out.println(file + " encrypt success.");
 			}else{
 				encrypter.decrypt(file);
+				System.out.println(file + " decrypt success.");
 			}
 		}
 		
+		System.out.println("done!");
 	} //main end
 	
 }

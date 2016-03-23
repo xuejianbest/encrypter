@@ -1,19 +1,39 @@
 package com.lwt.encryp;
 
 import java.io.File;
-import java.io.IOException;
+
 
 public class Main {
-
-	public static void main(String[] args) throws IOException {
-//		Encrypter.creatNewKeyFile(new File("E:\\BaiduYunDownload\\t\\key"));
+	
+	public static void main(String[] args) throws Exception {
+//		String argument = "-kf e:/BaiduYunDownload/out_f.txt e:/BaiduYunDownload/out_d.txt e:/BaiduYunDownload/out_d.txt";
+//		CommandLineUtil command = new CommandLineUtil(argument.split("\\s+"));
 		
-		File key_file = new File("E:\\BaiduYunDownload\\t\\key");
-		Encrypter encrypter = new Encrypter(key_file);
+		CommandLineUtil command = new CommandLineUtil(args);
+		File[] files = command.getFiles();
+		File[] dirs = command.getDirs();
 		
-//		encrypter.encrypt(new File("E:\\BaiduYunDownload\\t\\src.mp4"));
+//		System.setOut(new PrintStream(new File("e:/out_f.txt")));
+		for(File f : files){
+			System.out.println("file: " + f);
+		}
 		
-		encrypter.decrypt(new File("E:\\BaiduYunDownload\\t\\src.mp4.rar"));
-	}
-
+//		System.setOut(new PrintStream(new File("e:/out_d.txt")));
+		for(File d : dirs){
+			System.out.println("dir: " + d);
+		}
+		
+		File keyFile = command.getKeyFile();
+//		System.out.println("key file: " + keyFile);
+		Encrypter encrypter = new Encrypter(keyFile);
+		for(File file : files){
+			if(command.isEncrypt()){
+				encrypter.encrypt(file);
+			}else{
+				encrypter.decrypt(file);
+			}
+		}
+		
+	} //main end
+	
 }

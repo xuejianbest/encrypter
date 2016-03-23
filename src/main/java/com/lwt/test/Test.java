@@ -1,36 +1,21 @@
 package com.lwt.test;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.io.File;
+import java.lang.reflect.Field;
+
 
 public class Test {
-	/**
-	 * @param args
-	 * @throws IOException
-	 */
 	public static void main(String[] args) throws Exception {
-		Timer timer = new Timer();
+		File file = new File("sRc");
+		File file2 = new File("./Src");
 		
-		
-		TimerTask task = new Task();
-		timer.schedule(task, new Date(), 1000);
-		System.out.println("...main");
-		
-//		Thread.sleep(5000);
-		task.cancel();
-		
-		timer = null;
-	}
-	
-	public static class Task extends TimerTask{
-		@Override
-		public void run() {
-			System.out.println("...excu");
-		}
+		System.out.println(file.getAbsolutePath());
+		System.out.println(file2.getAbsolutePath());
+		System.out.println(file2.getCanonicalPath());
+		System.out.println(file.getCanonicalPath());
+		System.out.println(file.equals(file2));
+		System.out.println(file.compareTo(file2));
 	}
 	
 	
 }
-

@@ -44,7 +44,8 @@ public class Encrypter {
 		if(file_head_len == -1){
 			rf_src_file.close();
 			rf_key_file.close();
-			return null;
+			System.out.println("Skipped file: "+ src_file + " ,because the file is empty.");
+			return src_file;
 		}
 		file_head = Arrays.copyOf(file_head, file_head_len);
 		
@@ -87,6 +88,9 @@ public class Encrypter {
 		System.arraycopy(file_name_len_bytes, 0, new_head, FILE_HEAD_LEN-8, 4);
 		System.arraycopy(file_name_key_off_bytes, 0, new_head, FILE_HEAD_LEN-4, 4);
 		
+		//写入key文件前16字节用于解密校验
+		System.arraycopy(key_data, 0, new_head, FILE_HEAD_LEN-24-16, 16);
+		
 		rf_src_file.seek(0);
 		rf_src_file.write(new_head);
 		
@@ -94,7 +98,6 @@ public class Encrypter {
 		rf_key_file.close();
 		
 		//更改文件名
-//		String file_path = src_file.getParent() + File.separator;
 		File res_file = new File(src_file.toString() + ".rar");
 		src_file.renameTo(res_file);
 		return res_file;
@@ -107,8 +110,24 @@ public class Encrypter {
 		
 		//读取文件头,并解析
 		byte[] new_head = new byte[FILE_HEAD_LEN];
+		rf_src_file.seek(0);
 		rf_src_file.read(new_head);
 		
+		//读取密钥
+		byte[] key_data = new byte[KEY_DATA_LEN];
+		rf_key_file.read(key_data);
+				
+		//校验key文件有效性
+		byte[] checksum_head = Arrays.copyOfRange(new_head, FILE_HEAD_LEN-24-16, FILE_HEAD_LEN-24);
+		byte[] checksum_key = Arrays.copyOfRange(key_data, 0, 16);
+		if(!Arrays.equals(checksum_head, checksum_key)){
+			rf_src_file.close();
+			rf_key_file.close();
+			System.out.println("Skipped file: "+ src_file + " ,because the file is not encrypt with the key file: "+ keyFile + '.');
+			return src_file;
+		}
+		
+		//解析文件头
 		byte[] file_head_off_bytes = new byte[4];
 		byte[] file_head_len_bytes = new byte[4];
 		byte[] file_head_key_off_bytes = new byte[4];
@@ -128,10 +147,7 @@ public class Encrypter {
 		int file_name_len = DataUtil.byteArr2Int_le(file_name_len_bytes);
 		int file_name_key_off = DataUtil.byteArr2Int_le(file_name_key_off_bytes);
 		
-		//读取密钥
-		byte[] key_data = new byte[KEY_DATA_LEN];
-		rf_key_file.read(key_data);
-		//读取文件头
+		//读取文件头密文
 		byte[] file_head = new byte[file_head_len];
 		rf_key_file.seek(file_head_off);
 		rf_key_file.read(file_head);
@@ -145,7 +161,7 @@ public class Encrypter {
 			rf_src_file.setLength(file_head_len);
 		}
 		
-		//读取文件名
+		//读取文件名密文
 		byte[] file_name = new byte[file_name_len];
 		rf_key_file.seek(file_name_off);
 		rf_key_file.read(file_name);

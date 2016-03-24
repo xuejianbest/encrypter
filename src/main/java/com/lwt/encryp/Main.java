@@ -23,7 +23,7 @@ public class Main {
 		
 		for(File file : files){
 			if(file.getCanonicalPath().equals(keyFile.getCanonicalPath())){
-				System.out.println("Skipped the key file: keyFile");
+				System.out.println("Skipped the key file: " + keyFile + ".");
 				continue;
 			}
 			if(command.isEncrypt()){
@@ -38,8 +38,10 @@ public class Main {
 				}
 				System.out.println("Encrypted: " + file);
 			}else{
-				encrypter.decrypt(file);
-				System.out.println("Decrypted: " + file);
+				File de_file = encrypter.decrypt(file);
+				if(!de_file.equals(file)){
+					System.out.println("Decrypted: " + file);
+				}
 			}
 		}
 		

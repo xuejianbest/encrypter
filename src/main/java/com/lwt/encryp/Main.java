@@ -2,6 +2,8 @@ package com.lwt.encryp;
 
 import java.io.File;
 
+import com.lwt.util.DataUtil;
+
 public class Main {
 	
 	public static void main(String[] args) throws Exception {
@@ -14,6 +16,7 @@ public class Main {
 		if(command.isCreate()){
 			Encrypter.creatNewKeyFile(keyFile);
 			System.out.println("key file is created: " + keyFile);
+			System.exit(0);
 		}
 		
 		Encrypter encrypter = new Encrypter(keyFile);
@@ -24,7 +27,15 @@ public class Main {
 				continue;
 			}
 			if(command.isEncrypt()){
-				encrypter.encrypt(file);
+				File en_file = encrypter.encrypt(file);
+				if(command.isEnName()){
+					File file_t = new File(en_file.getParent() + DataUtil.random_int(0, Integer.MAX_VALUE) + ".rar");
+					if(file_t.exists()){
+						file_t = new File(en_file.getParent() + DataUtil.random_int(0, Integer.MAX_VALUE) + ".rar");
+					}else{
+						en_file.renameTo(file_t);
+					}
+				}
 				System.out.println("Encrypted: " + file);
 			}else{
 				encrypter.decrypt(file);

@@ -23,6 +23,7 @@ public class CommandLineUtil {
 	private File keyFile;
 	private boolean encrypt;
 	private boolean create;
+	private boolean enName;
 	private File[] files;
 	private File[] dirs;
 	public File getKeyFile() {
@@ -30,6 +31,9 @@ public class CommandLineUtil {
 	}
 	public boolean isEncrypt() {
 		return encrypt;
+	}
+	public boolean isEnName() {
+		return enName;
 	}
 	public boolean isCreate() {
 		return create;
@@ -55,6 +59,7 @@ public class CommandLineUtil {
 		Option opt_e = new Option("e", "encrypt", false, "Encrypt file.");
 		Option opt_d = new Option("d", "decrypt", false, "Decrypt file.");
 		Option opt_c = new Option("c", "create", false, "Create new key file.");
+		Option opt_n = new Option("n", "name", false, "Encrypt file name.");
 		Option opt_k = Option.builder("k").hasArg().argName("keyFile")
 				.desc("Specify the key file").build();
 		Option opt_f = Option.builder("f").hasArgs().argName("file1,file2...")
@@ -75,6 +80,7 @@ public class CommandLineUtil {
 				.desc("A directories list with ',' separate to recurse handle child files")
 				.build();
 		
+		opts.addOption(opt_n);
 		opts.addOption(opt_c);
 		opts.addOption(opt_k);
 		opts.addOption(opt_h);
@@ -113,6 +119,9 @@ public class CommandLineUtil {
 			encrypt = false;
 		} else {
 			encrypt = true;
+			if(line.hasOption("n")){
+				enName = true;
+			}
 		}
 		
 		if (line.hasOption("k")) {

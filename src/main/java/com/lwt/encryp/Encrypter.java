@@ -34,7 +34,7 @@ public class Encrypter {
 	}
 	
 	//加密文件方法
-	public void encrypt(File src_file) throws IOException {
+	public File encrypt(File src_file) throws IOException {
 		RandomAccessFile rf_src_file = new RandomAccessFile(src_file, "rw");
 		RandomAccessFile rf_key_file = new RandomAccessFile(keyFile, "rw");
 		
@@ -44,7 +44,7 @@ public class Encrypter {
 		if(file_head_len == -1){
 			rf_src_file.close();
 			rf_key_file.close();
-			return;
+			return null;
 		}
 		file_head = Arrays.copyOf(file_head, file_head_len);
 		
@@ -95,11 +95,13 @@ public class Encrypter {
 		
 		//更改文件名
 //		String file_path = src_file.getParent() + File.separator;
-		src_file.renameTo(new File(src_file.toString() + ".rar"));
+		File res_file = new File(src_file.toString() + ".rar");
+		src_file.renameTo(res_file);
+		return res_file;
 	}
 	
 	//解密文件方法
-	public void decrypt(File src_file) throws IOException {
+	public File decrypt(File src_file) throws IOException {
 		RandomAccessFile rf_src_file = new RandomAccessFile(src_file, "rw");
 		RandomAccessFile rf_key_file = new RandomAccessFile(keyFile, "rw");
 		
@@ -155,7 +157,9 @@ public class Encrypter {
 		
 		//恢复文件名
 		String file_path = src_file.getParent() + File.separator;
-		src_file.renameTo(new File(file_path + new String(file_name)));
+		File res_file = new File(file_path + new String(file_name));
+		src_file.renameTo(res_file);
+		return res_file;
 	}
 			
 	//多表替换加密算法

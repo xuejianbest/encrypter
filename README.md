@@ -10,11 +10,13 @@
 运行程序采用如下命令行参数：
 ```shell
 usage: encrypt
+ -c,--create           Create new key file.
  -d,--decrypt          Decrypt file.
  -e,--encrypt          Encrypt file.
  -f <file1,file2...>   A files list with ',' separate to handle
  -h                    Show this page.
  -k <keyFile>          Specify the key file
+ -n,--name             Encrypt file name.
  -r <dir1,dir1...>     A directories list with ',' separate to handle its
                        child files
  -R <dir1,dir1...>     A directories list with ',' separate to recurse

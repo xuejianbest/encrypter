@@ -1,15 +1,18 @@
 package com.lwt.test;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-		File t = new File("e:/abc.txt");
-		t.renameTo(new File("e:/abcd.txt"));
-		System.out.println(t);
+//		System.out.println("\nGo on?(y/n)");
+//		Scanner in = new Scanner(new BufferedInputStream(System.in));
+//		String str = in.next();
+//		if("n".equals(str)){
+//			System.exit(1);
+//		}
+//		in.close();
+		
 	}
 
 }

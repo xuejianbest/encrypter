@@ -1,4 +1,4 @@
-package com.lwt.encryp;
+package com.lwt.encrypt;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

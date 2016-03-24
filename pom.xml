@@ -29,7 +29,7 @@
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
 							<!-- jar启动入口类 -->
-							<mainClass>com.lwt.encryp.Main</mainClass>
+							<mainClass>com.lwt.encrypt.Main</mainClass>
 						</manifest>
 						<manifestEntries>
 							<!-- 在Class-Path下添加配置文件的路径 -->

@@ -178,6 +178,9 @@ public class Encrypter {
 	
 	//生成密钥文件方法
 	public static void creatNewKeyFile(File newKeyFile) throws IOException{
+		if(newKeyFile.isFile()){
+			System.err.println(newKeyFile + " is alread exists.");
+		}
 		BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(newKeyFile));
 		byte[] bytes = new byte[KEY_DATA_LEN];
 		for(int i=0; i<KEY_DATA_LEN; i++){

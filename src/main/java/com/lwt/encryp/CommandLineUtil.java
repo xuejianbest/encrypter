@@ -22,6 +22,7 @@ public class CommandLineUtil {
 	
 	private File keyFile;
 	private boolean encrypt;
+	private boolean create;
 	private File[] files;
 	private File[] dirs;
 	public File getKeyFile() {
@@ -29,6 +30,9 @@ public class CommandLineUtil {
 	}
 	public boolean isEncrypt() {
 		return encrypt;
+	}
+	public boolean isCreate() {
+		return create;
 	}
 	public File[] getFiles() {
 		return files;
@@ -50,8 +54,9 @@ public class CommandLineUtil {
 		Option opt_h = new Option("h", "Show this page.");
 		Option opt_e = new Option("e", "encrypt", false, "Encrypt file.");
 		Option opt_d = new Option("d", "decrypt", false, "Decrypt file.");
+		Option opt_c = new Option("c", "create", false, "Create new key file.");
 		Option opt_k = Option.builder("k").hasArg().argName("keyFile")
-				.desc("Specify the key file").required().build();
+				.desc("Specify the key file").build();
 		Option opt_f = Option.builder("f").hasArgs().argName("file1,file2...")
 				.valueSeparator(',')
 				.desc("A files list with ',' separate to handle").build();
@@ -69,7 +74,8 @@ public class CommandLineUtil {
 				.valueSeparator(',')
 				.desc("A directories list with ',' separate to recurse handle child files")
 				.build();
-
+		
+		opts.addOption(opt_c);
 		opts.addOption(opt_k);
 		opts.addOption(opt_h);
 		opts.addOption(opt_e);
@@ -112,11 +118,16 @@ public class CommandLineUtil {
 		if (line.hasOption("k")) {
 			String k = line.getOptionValue("k");
 			File file = new File(k);
-			if(file.isFile()){
+			if (line.hasOption("c")) {
 				keyFile = file;
-			}else{
-				System.err.println(file + " is not a available key file");
-				System.exit(1);
+				create = true;
+			}else {
+				if(file.isFile()){
+					keyFile = file;
+				} else{
+					System.err.println(file + " is not a available key file");
+					System.exit(1);
+				}
 			}
 		}
 
@@ -169,7 +180,9 @@ public class CommandLineUtil {
 		
 		this.files = files.toArray(new File[0]);
 		this.dirs = dirs.toArray(new File[0]);
+		
 	}
+	
 	
 	public void duplicate_removal (){
 		HashSet<File> fileSet = new HashSet<File>();

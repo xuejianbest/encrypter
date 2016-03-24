@@ -56,7 +56,7 @@ public class CommandLineUtil {
 	// 定义命令行参数
 	private void definedOptions(){
 		Option opt_h = new Option("h", "Show this page.");
-		Option opt_e = new Option("e", "encrypt", false, "Encrypt file.");
+		Option opt_e = new Option("e", "encrypt", false, "Encrypt file.(default)");
 		Option opt_d = new Option("d", "decrypt", false, "Decrypt file.");
 		Option opt_c = new Option("c", "create", false, "Create new key file.");
 		Option opt_n = new Option("n", "name", false, "Encrypt file name.");

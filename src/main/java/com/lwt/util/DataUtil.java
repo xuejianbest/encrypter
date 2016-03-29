@@ -1,5 +1,7 @@
 package com.lwt.util;
 
+import java.util.Arrays;
+
 public class DataUtil {
 	
 	/* 将一个int转化为长度为4的byte数组，小端字节序方式。
@@ -36,6 +38,38 @@ public class DataUtil {
 		return (int)(Math.random()*(end - start)) + start;
 	}
 	
-	
-	
+	/* 将多个数组合并为1个，返回一个新创建的数组
+	 * 
+	 * */
+	public static <T> T[] combinationArray(T[] afirst, T[]... aaRests){
+		int iLenOfRests = 0;
+		for(T[] aOneOfRests : aaRests){
+			iLenOfRests += aOneOfRests.length;
+		}
+		
+		T[] aResult = Arrays.copyOf(afirst, iLenOfRests + afirst.length);
+		int iLenOfPreArr = afirst.length;
+		for(T[] aOneOfRests : aaRests){
+			System.arraycopy(aOneOfRests, 0, aResult, iLenOfPreArr, aOneOfRests.length);
+			iLenOfPreArr += aOneOfRests.length;
+		}
+		return aResult;
+	}
+	/* 将多个数组合并为1个，返回一个新创建的数组
+	 * 
+	 * */
+	public static byte[] combinationArray(byte[] afirst, byte[]... aaRests){
+		int iLenOfRests = 0;
+		for(byte[] aOneOfRests : aaRests){
+			iLenOfRests += aOneOfRests.length;
+		}
+		
+		byte[] aResult = Arrays.copyOf(afirst, iLenOfRests + afirst.length);
+		int iLenOfPreArr = afirst.length;
+		for(byte[] aOneOfRests : aaRests){
+			System.arraycopy(aOneOfRests, 0, aResult, iLenOfPreArr, aOneOfRests.length);
+			iLenOfPreArr += aOneOfRests.length;
+		}
+		return aResult;
+	}
 }
